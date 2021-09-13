@@ -23,7 +23,7 @@ export default defineComponent({
       default: 0
     }
   },
-  setup(props) {
+  setup(props, { emit }) {
     const el = ref(null)
     const rotateBase = 360 / props.symbols.length
     watch(props, () => {
@@ -47,6 +47,7 @@ export default defineComponent({
         repeat: 0,
         speed: 1,
         easing: 'linear.none',
+        onComplete: () => emit('finish')
       })
 
       html.play()
