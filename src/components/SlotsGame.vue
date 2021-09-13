@@ -3,19 +3,20 @@
     <Reel
         v-for="reel in reelsCount"
         :key="reel"
-        :symbols="symbols"
+        :symbols="reelImages"
         :elementIndex="centered[reel - 1]"
         :delay="reel - 1"
         @finish="reelFinishHandler(reel)"
     />
   </div>
   <button @click="spinHandler">Spin</button>
+  <PayTable />
 </template>
 
 <script lang="ts">
 import Reel from "./Reel.vue"
 import { defineComponent, computed, ref, watch } from "vue"
-import GameService, { reelsCount, symbols } from "@/services/GameService"
+import GameService, { reelIcons, reelsCount, reelSymbols } from "@/services/GameService"
 import WinService from "@/services/WinService"
 
 export default defineComponent({
@@ -50,9 +51,11 @@ export default defineComponent({
       }
     })
 
+    const reelImages = reelSymbols.map(symbol => reelIcons[symbol])
+
     return {
       centered,
-      symbols,
+      reelImages,
       reelsCount,
       spinHandler,
       reelFinishHandler

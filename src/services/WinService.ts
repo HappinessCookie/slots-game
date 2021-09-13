@@ -1,4 +1,4 @@
-enum ReelSymbol {
+export enum ReelSymbol {
   TripleBar,
   Bar,
   DoubleBar,
@@ -43,7 +43,7 @@ class WinConfig {
   }
 }
 
-const combinationList = [
+export const combinationList = [
   new WinConfig(cherryCombination, 2000, Line.Top),
   new WinConfig(cherryCombination, 1000, Line.Center),
   new WinConfig(cherryCombination, 4000, Line.Bottom),
