@@ -1,6 +1,6 @@
 <template>
   <div class="reel" ref="el">
-    <img class="reel__item" v-for="(symbol, index) in symbols" :key="index" :src="symbol.image" alt="">
+    <img class="reel__item" v-for="(symbol, index) in symbols" :key="index" :src="symbol" alt="">
   </div>
 </template>
 <script lang="ts">
