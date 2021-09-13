@@ -1,8 +1,12 @@
 <template>
   <div class="reels">
-    <Reel ref="reel" :elementIndex="centered[0]" :delay="0" />
-    <Reel ref="reel" :elementIndex="centered[1]" :delay="1" />
-    <Reel ref="reel" :elementIndex="centered[2]" :delay="2" />
+    <Reel
+        v-for="reel in reelsCount"
+        :key="reel"
+        :symbols="symbols"
+        :elementIndex="centered[reel - 1]"
+        :delay="reel - 1"
+    />
   </div>
   <button @click="spinHandler">Spin</button>
 </template>
@@ -10,10 +14,7 @@
 <script lang="ts">
 import Reel from "./Reel.vue"
 import { defineComponent, ref } from "vue"
-
-function randomIntFromInterval(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min + 1) + min)
-}
+import GameService, { reelsCount, symbols } from "@/services/GameService"
 
 export default defineComponent({
   name: "SlotsGame",
@@ -21,19 +22,15 @@ export default defineComponent({
     Reel
   },
   setup() {
-    const reel = ref(null)
     const centered = ref([])
     const spinHandler = () => {
-      centered.value = [
-        randomIntFromInterval(1, 5),
-        randomIntFromInterval(1, 5),
-        randomIntFromInterval(1, 5)
-      ]
+      centered.value = GameService.getRandomCombination()
     }
 
     return {
-      reel,
       centered,
+      symbols,
+      reelsCount,
       spinHandler
     }
   }

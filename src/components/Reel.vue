@@ -1,43 +1,19 @@
 <template>
   <div class="reel" ref="el">
-    <img class="reel__item" v-for="symbol in symbols" :key="symbol.key" :src="symbol.image" :alt="symbol.key">
+    <img class="reel__item" v-for="(symbol, index) in symbols" :key="index" :src="symbol.image" alt="">
   </div>
 </template>
 <script lang="ts">
 import mojs from '@mojs/core/dist/mo.umd.js'
-import { defineComponent, ref, watch } from 'vue'
-import TripleBar from '@/assets/reel-symbols/3xBAR.png'
-import Bar from '@/assets/reel-symbols/BAR.png'
-import DoubleBar from '@/assets/reel-symbols/2xBAR.png'
-import Seven from '@/assets/reel-symbols/7.png'
-import Cherry from '@/assets/reel-symbols/Cherry.png'
-
-const symbols = [
-  {
-    key: 'triple-bar',
-    image: TripleBar
-  },
-  {
-    key: 'bar',
-    image: Bar
-  },
-  {
-    key: 'double-bar',
-    image: DoubleBar
-  },
-  {
-    key: 'seven',
-    image: Seven
-  },
-  {
-    key: 'cherry',
-    image: Cherry
-  },
-]
+import { defineComponent, PropType, ref, watch } from 'vue'
 
 export default defineComponent({
   name: 'Reel',
   props: {
+    symbols: {
+      type: Array as PropType<string[]>,
+      required: true
+    },
     elementIndex: {
       type: Number,
       default: 0
@@ -49,7 +25,7 @@ export default defineComponent({
   },
   setup(props) {
     const el = ref(null)
-    const rotateBase = 360 / symbols.length;
+    const rotateBase = 360 / props.symbols.length
     watch(props, () => {
       const randomDeg = rotateBase * props.elementIndex
       const html = new mojs.Html({
@@ -76,8 +52,7 @@ export default defineComponent({
       html.play()
     })
     return {
-      el,
-      symbols
+      el
     }
   }
 })
