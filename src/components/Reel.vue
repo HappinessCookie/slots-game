@@ -54,7 +54,6 @@ export default defineComponent({
       const randomDeg = rotateBase * props.elementIndex
       const html = new mojs.Html({
         el: el.value,
-        y: -70,
         rotateX: { 360: 0 },
         isShowEnd: true,
         isForce3d: false,
@@ -64,7 +63,6 @@ export default defineComponent({
         speed: 1,
         easing: 'linear.none',
       }).then({
-        y: -70,
         rotateX: -randomDeg,
         isShowEnd: true,
         isForce3d: false,
@@ -101,7 +99,6 @@ $rotate-base: 360deg / $item-count;
   position: relative;
   width: 200px;
   height: $radius-out * 2;
-  transform: translateY(-($radius-out - $item--height / 2));
 
   &__item {
     height: $item--height;

@@ -43,7 +43,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 .reels {
   display: flex;
-  height: 200px;
+  align-items: center;
+  height: 300px;
   overflow: hidden;
 }
 </style>
