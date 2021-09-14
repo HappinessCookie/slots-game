@@ -41,9 +41,9 @@ export default defineComponent({
     const checkAllDone = computed(() => finished.value.length === reelsCount)
 
     const checkWin = () => {
-      const winAmount = WinService.combinationWinCheck(centered.value)
-      if (winAmount > 0) {
-        alert(winAmount)
+      const winningCombination = WinService.winningCombination(centered.value)
+      if (winningCombination) {
+        alert(winningCombination.winAmount)
       }
     }
 

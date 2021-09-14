@@ -56,8 +56,8 @@ export const combinationList = [
 ]
 
 export default (new class {
-  combinationWinCheck(symbols: ReelSymbol[], line: Line = Line.Center) {
-    const winCombination = combinationList.find(combinationConfig => {
+  winningCombination(symbols: ReelSymbol[], line: Line = Line.Center) {
+    return combinationList.find(combinationConfig => {
       if (combinationConfig.line !== Line.Any && combinationConfig.line !== line) {
         return false
       }
@@ -68,8 +68,6 @@ export default (new class {
         }
         return symbol === combinationSymbol
       })
-    })
-
-    return winCombination?.winAmount ?? 0
+    }) ?? null
   }
 })
