@@ -10,8 +10,8 @@
     </tr>
     </thead>
     <tbody>
-    <template v-for="combination in combinationList">
-      <tr>
+    <template v-for="combination in combinationList" :key="combination.combination">
+      <tr :class="{ 'win-row': combination.id === winCombination }">
         <td>
           <PayTableSymbol :symbols="combination.combination.symbols[0]" />
         </td>
@@ -40,6 +40,12 @@ import PayTableSymbol from "@/components/PayTableSymbol.vue"
 export default defineComponent({
   name: 'PayTable',
   components: { PayTableSymbol },
+  props: {
+    winCombination: {
+      type: Symbol,
+      default: Symbol()
+    }
+  },
   setup() {
     return {
       combinationList,
@@ -48,3 +54,19 @@ export default defineComponent({
   }
 })
 </script>
+<style lang="scss" scoped>
+@keyframes win {
+  from {
+    background-color: aquamarine;
+  }
+
+  to {
+    background-color: transparent;
+  }
+}
+
+.win-row {
+  animation: win 200ms ease-in-out;
+  animation-iteration-count: 3;
+}
+</style>

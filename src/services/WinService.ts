@@ -34,12 +34,15 @@ const anyBarCombination = new Combination([
   [ReelSymbol.Bar, ReelSymbol.DoubleBar, ReelSymbol.TripleBar]
 ])
 
-class WinConfig {
+export class WinConfig {
+  public readonly id: Symbol
+
   constructor(
     public readonly combination: Combination,
     public readonly winAmount: number,
     public readonly line: Line = Line.Any
   ) {
+    this.id = Symbol()
   }
 }
 

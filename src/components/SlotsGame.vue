@@ -10,7 +10,7 @@
     />
   </div>
   <button @click="spinHandler">Spin</button>
-  <PayTable />
+  <PayTable :win-combination="winCombination" />
 </template>
 
 <script lang="ts">
@@ -29,9 +29,11 @@ export default defineComponent({
   setup() {
     const centered = ref<number[]>([])
     const finished = ref<number[]>([])
+    const winCombination = ref<Symbol>(Symbol())
 
     const spinHandler = () => {
       finished.value = []
+      winCombination.value = Symbol()
       centered.value = GameService.getRandomCombination()
     }
     const reelFinishHandler = (index: number) => {
@@ -43,6 +45,7 @@ export default defineComponent({
     const checkWin = () => {
       const winningCombination = WinService.winningCombination(centered.value)
       if (winningCombination) {
+        winCombination.value = winAmount.id
         alert(winningCombination.winAmount)
       }
     }
@@ -57,6 +60,7 @@ export default defineComponent({
 
     return {
       centered,
+      winCombination,
       reelImages,
       reelsCount,
       spinHandler,
