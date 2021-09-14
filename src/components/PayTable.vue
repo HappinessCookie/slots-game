@@ -12,9 +12,21 @@
     <tbody>
     <template v-for="combination in combinationList">
       <tr>
-        <td>{{ combination.combination.symbols[0] }}</td>
-        <td>{{ combination.combination.symbols[1] }}</td>
-        <td>{{ combination.combination.symbols[2] }}</td>
+        <td>
+          <template v-for="symbol in combination.combination.symbols[0]">
+            <img :src="reelIcons[symbol]" />
+          </template>
+        </td>
+        <td>
+          <template v-for="symbol in combination.combination.symbols[1]">
+            <img :src="reelIcons[symbol]" />
+          </template>
+        </td>
+        <td>
+          <template v-for="symbol in combination.combination.symbols[2]">
+            <img :src="reelIcons[symbol]" />
+          </template>
+        </td>
         <td>{{ combination.line }}</td>
         <td>{{ combination.winAmount }}</td>
       </tr>
@@ -28,12 +40,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { combinationList } from "@/services/WinService"
+import { reelIcons } from "@/services/GameService"
 
 export default defineComponent({
   name: 'PayTable',
   setup() {
     return {
-      combinationList
+      combinationList,
+      reelIcons
     }
   }
 })

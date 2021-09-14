@@ -18,10 +18,12 @@ import Reel from "./Reel.vue"
 import { defineComponent, computed, ref, watch } from "vue"
 import GameService, { reelIcons, reelsCount, reelSymbols } from "@/services/GameService"
 import WinService from "@/services/WinService"
+import PayTable from "@/components/PayTable.vue"
 
 export default defineComponent({
   name: "SlotsGame",
   components: {
+    PayTable,
     Reel
   },
   setup() {
