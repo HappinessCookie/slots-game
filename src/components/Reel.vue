@@ -1,22 +1,22 @@
 <template>
   <div class="reel" ref="el">
-    <img class="reel__item" v-for="(symbol, index) in symbols" :key="index" :src="symbol" alt="">
+    <img class="reel__item" v-for="symbol in reel.symbols" :key="symbol.symbol" :src="symbol.image" alt="">
   </div>
 </template>
 <script lang="ts">
 import mojs from '@mojs/core/dist/mo.umd.js'
 import { defineComponent, PropType, ref, watch } from 'vue'
+import { ReelSymbol, ReelView } from "@/services/GameService"
 
 export default defineComponent({
   name: 'Reel',
   props: {
-    symbols: {
-      type: Array as PropType<string[]>,
+    reel: {
+      type: ReelView,
       required: true
     },
     elementIndex: {
-      type: Number,
-      default: 0
+      type: String as PropType<ReelSymbol>
     },
     delay: {
       type: Number,
@@ -25,27 +25,22 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const el = ref(null)
-    const rotateBase = 360 / props.symbols.length
+    const rotateBase = 360 / props.reel.symbols.length
     watch(props, () => {
-      const randomDeg = rotateBase * props.elementIndex
+      const randomDeg = rotateBase * props.reel.symbols.findIndex(symbol => symbol.symbol === props.elementIndex)
       const html = new mojs.Html({
         el: el.value,
         rotateX: { 360: 0 },
         isShowEnd: true,
         isForce3d: false,
         duration: 500,
-        delay: 0,
         repeat: 4,
-        speed: 1,
         easing: 'linear.none',
       }).then({
         rotateX: -randomDeg,
         isShowEnd: true,
         isForce3d: false,
         duration: 500 * props.delay,
-        delay: 0,
-        repeat: 0,
-        speed: 1,
         easing: 'linear.none',
         onComplete: () => emit('finish')
       })

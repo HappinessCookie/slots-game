@@ -1,12 +1,6 @@
-export enum ReelSymbol {
-  TripleBar,
-  Bar,
-  DoubleBar,
-  Seven,
-  Cherry
-}
+import { bar, cherry, doubleBar, ReelSymbol, ReelSymbolView, seven, tripleBar } from "@/services/GameService"
 
-enum Line {
+export enum Line {
   Top,
   Center,
   Bottom,
@@ -14,25 +8,17 @@ enum Line {
 }
 
 class Combination {
-  constructor(public readonly symbols: Array<ReelSymbol | ReelSymbol[]>) {
+  constructor(public readonly symbols: Array<ReelSymbolView | ReelSymbolView[]>) {
   }
 }
 
-const cherryCombination = new Combination([ReelSymbol.Cherry, ReelSymbol.Cherry, ReelSymbol.Cherry])
-const sevenCombination = new Combination([ReelSymbol.Seven, ReelSymbol.Seven, ReelSymbol.Seven])
-const sevenOrCherryCombination = new Combination([
-  [ReelSymbol.Seven, ReelSymbol.Cherry],
-  [ReelSymbol.Seven, ReelSymbol.Cherry],
-  [ReelSymbol.Seven, ReelSymbol.Cherry]
-])
-const tripleBarCombination = new Combination([ReelSymbol.TripleBar, ReelSymbol.TripleBar, ReelSymbol.TripleBar])
-const doubleBarCombination = new Combination([ReelSymbol.DoubleBar, ReelSymbol.DoubleBar, ReelSymbol.DoubleBar])
-const barCombination = new Combination([ReelSymbol.Bar, ReelSymbol.Bar, ReelSymbol.Bar])
-const anyBarCombination = new Combination([
-  [ReelSymbol.Bar, ReelSymbol.DoubleBar, ReelSymbol.TripleBar],
-  [ReelSymbol.Bar, ReelSymbol.DoubleBar, ReelSymbol.TripleBar],
-  [ReelSymbol.Bar, ReelSymbol.DoubleBar, ReelSymbol.TripleBar]
-])
+const cherryCombination = new Combination([cherry, cherry, cherry])
+const sevenCombination = new Combination([seven, seven, seven])
+const sevenOrCherryCombination = new Combination([[seven, cherry], [seven, cherry], [seven, cherry]])
+const tripleBarCombination = new Combination([tripleBar, tripleBar, tripleBar])
+const doubleBarCombination = new Combination([doubleBar, doubleBar, doubleBar])
+const barCombination = new Combination([bar, bar, bar])
+const anyBarCombination = new Combination([[bar, doubleBar, tripleBar], [bar, doubleBar, tripleBar], [bar, doubleBar, tripleBar]])
 
 export class WinConfig {
   public readonly id: Symbol
@@ -67,9 +53,9 @@ export default (new class {
       return symbols.every((symbol, index) => {
         const combinationSymbol = combinationConfig.combination.symbols[index]
         if (Array.isArray(combinationSymbol)) {
-          return combinationSymbol.includes(symbol)
+          return combinationSymbol.some(reelSymbol => reelSymbol.symbol === symbol)
         }
-        return symbol === combinationSymbol
+        return symbol === combinationSymbol.symbol
       })
     }) ?? null
   }

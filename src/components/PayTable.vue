@@ -34,7 +34,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { combinationList } from "@/services/WinService"
-import { reelIcons } from "@/services/GameService"
 import PayTableSymbol from "@/components/PayTableSymbol.vue"
 
 export default defineComponent({
@@ -48,8 +47,7 @@ export default defineComponent({
   },
   setup() {
     return {
-      combinationList,
-      reelIcons
+      combinationList
     }
   }
 })
