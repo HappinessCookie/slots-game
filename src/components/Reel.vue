@@ -27,6 +27,9 @@ export default defineComponent({
     const el = ref(null)
     const rotateBase = 360 / props.reel.symbols.length
     watch(props, () => {
+      if (!props.elementIndex) {
+        return
+      }
       const randomDeg = rotateBase * props.reel.symbols.findIndex(symbol => symbol.symbol === props.elementIndex)
       const html = new mojs.Html({
         el: el.value,

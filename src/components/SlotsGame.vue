@@ -4,7 +4,7 @@
         v-for="(reel, index) in reels"
         :key="reel"
         :reel="reel"
-        :elementIndex="centered[index]"
+        :elementIndex="centerCombination[index]"
         :delay="index"
         @finish="reelFinishHandler(index)"
     />
@@ -64,6 +64,8 @@ export default defineComponent({
         winCombination.value = winningCombination.id
         balance.value = BalanceService.addWinAmountToBalance(balance.value, winningCombination.winAmount)
       }
+
+      centerCombination.value = []
     }
 
     watch(checkAllDone, () => {
@@ -75,7 +77,8 @@ export default defineComponent({
     return {
       canSpin,
       balance,
-      centered: centerCombination,
+
+      centerCombination,
       winCombination,
       reels,
       spinHandler,
