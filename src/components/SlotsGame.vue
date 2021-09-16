@@ -26,8 +26,6 @@ import Reel from "./Reel.vue"
 import Debug from "./Debug.vue"
 import DebugService from "@/services/DebugService"
 
-// const winnableLines: Line[] = [Line.Top, Line.Center, Line.Bottom]
-
 export default defineComponent({
   name: "SlotsGame",
   components: {
