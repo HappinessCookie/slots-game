@@ -1,5 +1,5 @@
 <template>
-  <table>
+  <table class="pay-table">
     <thead>
     <tr>
       <th></th>
@@ -10,19 +10,13 @@
     </tr>
     </thead>
     <tbody>
-    <template v-for="combination in combinationList" :key="combination.combination">
+    <template v-for="combination in payTable" :key="combination.payLine">
       <tr :class="{ 'win-row': winCombinations.includes(combination.id) }">
-        <td>
-          <PayTableSymbol :symbols="combination.combination.symbols[0]" />
-        </td>
-        <td>
-          <PayTableSymbol :symbols="combination.combination.symbols[1]" />
-        </td>
-        <td>
-          <PayTableSymbol :symbols="combination.combination.symbols[2]" />
+        <td v-for="symbols in combination.payLine.symbols">
+          <PayTableSymbol :symbols="symbols" />
         </td>
         <td>{{ combination.line }}</td>
-        <td>{{ combination.winAmount }}</td>
+        <td>{{ combination.payoff }}</td>
       </tr>
     </template>
     <tr>
@@ -33,7 +27,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { combinationList } from "@/services/WinService"
+import { payTable } from "@/services/WinService"
 import PayTableSymbol from "@/components/PayTableSymbol.vue"
 
 export default defineComponent({
@@ -47,7 +41,7 @@ export default defineComponent({
   },
   setup() {
     return {
-      combinationList
+      payTable
     }
   }
 })
@@ -61,6 +55,10 @@ export default defineComponent({
   to {
     background-color: transparent;
   }
+}
+
+.pay-table {
+  max-width: 200px;
 }
 
 .win-row {

@@ -11,18 +11,20 @@
   </div>
   <Balance :balance="balance" />
   <button :disabled="!canSpin" @click="spinHandler">Spin</button>
+  <Debug :reels="reels" />
   <PayTable :win-combinations="winCombinations" />
 </template>
 
 <script lang="ts">
-import Reel from "./Reel.vue"
-import { defineComponent, computed, ref, watch } from "vue"
+import { computed, defineComponent, ref, watch } from "vue"
 import GameService, { reels, ReelSymbol } from "@/services/GameService"
 import WinService, { Line } from "@/services/WinService"
 import PayTable from "@/components/PayTable.vue"
 import Balance from "@/components/Balance.vue"
 import BalanceService from "@/services/BalanceService"
-import Debug from "@/components/Debug.vue"
+import Reel from "./Reel.vue"
+import Debug from "./Debug.vue"
+import DebugService from "@/services/DebugService"
 
 // const winnableLines: Line[] = [Line.Top, Line.Center, Line.Bottom]
 
@@ -48,7 +50,21 @@ export default defineComponent({
       balance.value = BalanceService.subtractCostOfSpin(balance.value)
       spinningReels.value = reels.map(_ => true)
       winCombinations.value = []
-      centerCombination.value = GameService.getRandomCombination()
+      centerCombination.value = reels.map((reel, index) => {
+        if (DebugService.debugState && DebugService.debugReels[index]) {
+          const debugSymbol = DebugService.debugReels[index]
+          switch (debugSymbol.line) {
+            case Line.Top:
+              return GameService.getNextSymbol(reel, GameService.getSymbolIndex(reel, debugSymbol.symbol))
+            case Line.Center:
+            default:
+              return debugSymbol.symbol
+            case Line.Bottom:
+              return GameService.getPreviousSymbol(reel, GameService.getSymbolIndex(reel, debugSymbol.symbol))
+          }
+        }
+        return GameService.getRandomReelSymbol(reel)
+      })
     }
 
     const checkAllDone = computed(() => !spinningReels.value.some(Boolean))
@@ -61,15 +77,15 @@ export default defineComponent({
       const bottomWinCombination = WinService.winningCombination(bottomCombination, Line.Bottom)
       if (centerWinCombination) {
         winCombinations.value.push(centerWinCombination.id)
-        balance.value = BalanceService.addWinAmountToBalance(balance.value, centerWinCombination.winAmount)
+        balance.value = BalanceService.addWinAmountToBalance(balance.value, centerWinCombination.payoff)
       }
       if (topWinCombination) {
         winCombinations.value.push(topWinCombination.id)
-        balance.value = BalanceService.addWinAmountToBalance(balance.value, topWinCombination.winAmount)
+        balance.value = BalanceService.addWinAmountToBalance(balance.value, topWinCombination.payoff)
       }
       if (bottomWinCombination) {
         winCombinations.value.push(bottomWinCombination.id)
-        balance.value = BalanceService.addWinAmountToBalance(balance.value, bottomWinCombination.winAmount)
+        balance.value = BalanceService.addWinAmountToBalance(balance.value, bottomWinCombination.payoff)
       }
 
       centerCombination.value = []

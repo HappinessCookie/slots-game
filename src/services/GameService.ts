@@ -40,30 +40,34 @@ function randomIntFromInterval(min: number, max: number) {
 }
 
 export default (new class {
-  private getRandomReelSymbol(reel: ReelView) {
-    const randomSymbolIndex = randomIntFromInterval(0, 2)
+  public getRandomReelSymbol(reel: ReelView) {
+    const randomSymbolIndex = randomIntFromInterval(0, reel.symbols.length - 1)
     return reel.symbols[randomSymbolIndex].symbol
   }
 
-  public getRandomCombination() {
-    return reels.map(this.getRandomReelSymbol)
+  public getPreviousSymbol(reel: ReelView, index: number) {
+    const previousIndex = (--index + reel.symbols.length) % reel.symbols.length
+    return reel.symbols[previousIndex].symbol
+  }
+
+  public getNextSymbol(reel: ReelView, index: number) {
+    const nextIndex = ++index % reel.symbols.length
+    return reel.symbols[nextIndex].symbol
+  }
+
+  public getSymbolIndex(reel: ReelView, symbol: ReelSymbol) {
+    return reel.symbols.findIndex(s => s.symbol === symbol)
   }
 
   public getTopCombination(combination: ReelSymbol[], reels: ReelView[]) {
     return reels.map((reel, index) => {
-      const combinationSymbol = combination[index]
-      const currentSymbolIndexInReel = reel.symbols.findIndex(symbol => symbol.symbol === combinationSymbol)
-      const previousIndex = currentSymbolIndexInReel - 1 >= 0 ? currentSymbolIndexInReel - 1 : reel.symbols.length - 1
-      return reel.symbols[previousIndex].symbol
+      return this.getPreviousSymbol(reel, this.getSymbolIndex(reel, combination[index]))
     })
   }
 
   public getBottomCombination(combination: ReelSymbol[], reels: ReelView[]) {
     return reels.map((reel, index) => {
-      const combinationSymbol = combination[index]
-      const currentSymbolIndexInReel = reel.symbols.findIndex(symbol => symbol.symbol === combinationSymbol)
-      const previousIndex = currentSymbolIndexInReel + 1 <= reel.symbols.length - 1 ? currentSymbolIndexInReel + 1 : 0
-      return reel.symbols[previousIndex].symbol
+      return this.getNextSymbol(reel, this.getSymbolIndex(reel, combination[index]))
     })
   }
 })

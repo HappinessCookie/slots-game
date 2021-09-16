@@ -7,55 +7,55 @@ export enum Line {
   Any = "any"
 }
 
-class Combination {
-  constructor(public readonly symbols: Array<ReelSymbolView | ReelSymbolView[]>) {
+class PayLine {
+  public readonly symbols: ReelSymbolView[][]
+
+  constructor(symbols: Array<ReelSymbolView | ReelSymbolView[]>) {
+    this.symbols = symbols.map(symbol => Array.isArray(symbol) ? symbol : [symbol])
   }
 }
 
-const cherryCombination = new Combination([cherry, cherry, cherry])
-const sevenCombination = new Combination([seven, seven, seven])
-const sevenOrCherryCombination = new Combination([[seven, cherry], [seven, cherry], [seven, cherry]])
-const tripleBarCombination = new Combination([tripleBar, tripleBar, tripleBar])
-const doubleBarCombination = new Combination([doubleBar, doubleBar, doubleBar])
-const barCombination = new Combination([bar, bar, bar])
-const anyBarCombination = new Combination([[bar, doubleBar, tripleBar], [bar, doubleBar, tripleBar], [bar, doubleBar, tripleBar]])
+const cherries = new PayLine([cherry, cherry, cherry])
+const sevens = new PayLine([seven, seven, seven])
+const sevenOrCherry = new PayLine([[seven, cherry], [seven, cherry], [seven, cherry]])
+const tripleBars = new PayLine([tripleBar, tripleBar, tripleBar])
+const doubleBars = new PayLine([doubleBar, doubleBar, doubleBar])
+const bars = new PayLine([bar, bar, bar])
+const anyBars = new PayLine([[bar, doubleBar, tripleBar], [bar, doubleBar, tripleBar], [bar, doubleBar, tripleBar]])
 
-export class WinConfig {
+export class Combination {
   public readonly id: Symbol
 
   constructor(
-    public readonly combination: Combination,
-    public readonly winAmount: number,
+    public readonly payLine: PayLine,
+    public readonly payoff: number,
     public readonly line: Line = Line.Any
   ) {
     this.id = Symbol()
   }
 }
 
-export const combinationList = [
-  new WinConfig(cherryCombination, 2000, Line.Top),
-  new WinConfig(cherryCombination, 1000, Line.Center),
-  new WinConfig(cherryCombination, 4000, Line.Bottom),
-  new WinConfig(sevenCombination, 150, Line.Any),
-  new WinConfig(sevenOrCherryCombination, 75, Line.Any),
-  new WinConfig(tripleBarCombination, 50, Line.Any),
-  new WinConfig(doubleBarCombination, 20, Line.Any),
-  new WinConfig(barCombination, 10, Line.Any),
-  new WinConfig(anyBarCombination, 5, Line.Any),
+export const payTable = [
+  new Combination(cherries, 2000, Line.Top),
+  new Combination(cherries, 1000, Line.Center),
+  new Combination(cherries, 4000, Line.Bottom),
+  new Combination(sevens, 150, Line.Any),
+  new Combination(sevenOrCherry, 75, Line.Any),
+  new Combination(tripleBars, 50, Line.Any),
+  new Combination(doubleBars, 20, Line.Any),
+  new Combination(bars, 10, Line.Any),
+  new Combination(anyBars, 5, Line.Any),
 ]
 
 export default (new class {
-  winningCombination(symbols: ReelSymbol[], line: Line = Line.Center) {
-    return combinationList.find(combinationConfig => {
-      if (combinationConfig.line !== Line.Any && combinationConfig.line !== line) {
+  winningCombination(symbolsSequence: ReelSymbol[], line: Line = Line.Center) {
+    return payTable.find(combination => {
+      if (combination.line !== Line.Any && combination.line !== line) {
         return false
       }
-      return symbols.every((symbol, index) => {
-        const combinationSymbol = combinationConfig.combination.symbols[index]
-        if (Array.isArray(combinationSymbol)) {
-          return combinationSymbol.some(reelSymbol => reelSymbol.symbol === symbol)
-        }
-        return symbol === combinationSymbol.symbol
+      return symbolsSequence.every((symbol, index) => {
+        const sequenceSymbolView = combination.payLine.symbols[index]
+        return sequenceSymbolView.some(sequenceSymbol => sequenceSymbol.symbol === symbol)
       })
     }) ?? null
   }

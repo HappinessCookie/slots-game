@@ -1,11 +1,8 @@
 <template>
-  <template v-if="Array.isArray(symbols)">
-    <h4>Any of:</h4>
-    <div class="symbols-list">
-      <img v-for="symbol in symbols" :key="symbol" :src="symbol.image" alt="" />
-    </div>
-  </template>
-  <img v-else :src="symbols.image" alt="" />
+  <h4 v-if="symbols.length > 1">Any of:</h4>
+  <div class="symbols-list">
+    <img v-for="symbol in symbols" :key="symbol" :src="symbol.image" alt="" />
+  </div>
 </template>
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
