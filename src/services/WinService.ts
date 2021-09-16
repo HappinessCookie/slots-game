@@ -1,10 +1,10 @@
 import { bar, cherry, doubleBar, ReelSymbol, ReelSymbolView, seven, tripleBar } from "@/services/GameService"
 
 export enum Line {
-  Top,
-  Center,
-  Bottom,
-  Any
+  Top = "top",
+  Center = "center",
+  Bottom = "bottom",
+  Any = "any"
 }
 
 class Combination {

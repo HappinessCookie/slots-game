@@ -11,7 +11,7 @@
     </thead>
     <tbody>
     <template v-for="combination in combinationList" :key="combination.combination">
-      <tr :class="{ 'win-row': combination.id === winCombination }">
+      <tr :class="{ 'win-row': winCombinations.includes(combination.id) }">
         <td>
           <PayTableSymbol :symbols="combination.combination.symbols[0]" />
         </td>
@@ -32,7 +32,7 @@
   </table>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { combinationList } from "@/services/WinService"
 import PayTableSymbol from "@/components/PayTableSymbol.vue"
 
@@ -40,9 +40,9 @@ export default defineComponent({
   name: 'PayTable',
   components: { PayTableSymbol },
   props: {
-    winCombination: {
-      type: Symbol,
-      default: Symbol()
+    winCombinations: {
+      type: Array as PropType<Symbol[]>,
+      default: () => []
     }
   },
   setup() {

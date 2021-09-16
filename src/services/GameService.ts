@@ -48,4 +48,22 @@ export default (new class {
   public getRandomCombination() {
     return reels.map(this.getRandomReelSymbol)
   }
+
+  public getTopCombination(combination: ReelSymbol[], reels: ReelView[]) {
+    return reels.map((reel, index) => {
+      const combinationSymbol = combination[index]
+      const currentSymbolIndexInReel = reel.symbols.findIndex(symbol => symbol.symbol === combinationSymbol)
+      const previousIndex = currentSymbolIndexInReel - 1 >= 0 ? currentSymbolIndexInReel - 1 : reel.symbols.length - 1
+      return reel.symbols[previousIndex].symbol
+    })
+  }
+
+  public getBottomCombination(combination: ReelSymbol[], reels: ReelView[]) {
+    return reels.map((reel, index) => {
+      const combinationSymbol = combination[index]
+      const currentSymbolIndexInReel = reel.symbols.findIndex(symbol => symbol.symbol === combinationSymbol)
+      const previousIndex = currentSymbolIndexInReel + 1 <= reel.symbols.length - 1 ? currentSymbolIndexInReel + 1 : 0
+      return reel.symbols[previousIndex].symbol
+    })
+  }
 })

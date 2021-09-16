@@ -6,13 +6,12 @@
         :reel="reel"
         :elementIndex="centerCombination[index]"
         :delay="index"
-        @finish="reelFinishHandler(index)"
+        @spinCompleted="() => spinningReels[index] = false"
     />
   </div>
   <Balance :balance="balance" />
   <button :disabled="!canSpin" @click="spinHandler">Spin</button>
-  <Debug />
-  <PayTable :win-combination="winCombination" />
+  <PayTable :win-combinations="winCombinations" />
 </template>
 
 <script lang="ts">
@@ -37,32 +36,40 @@ export default defineComponent({
   },
   setup() {
     const centerCombination = ref<ReelSymbol[]>([])
-    const finished = ref<number[]>([])
     const balance = ref<number>(500)
     const canSpin = computed(() => BalanceService.balanceEnoughForSpin(balance.value))
-    const winCombination = ref<Symbol>(Symbol())
+    const winCombinations = ref<Symbol[]>([])
+    const spinningReels = ref(reels.map(_ => false))
 
     const spinHandler = () => {
       if (!canSpin.value) {
         return
       }
       balance.value = BalanceService.subtractCostOfSpin(balance.value)
-      finished.value = []
-      winCombination.value = Symbol()
+      spinningReels.value = reels.map(_ => true)
+      winCombinations.value = []
       centerCombination.value = GameService.getRandomCombination()
     }
-    const reelFinishHandler = (index: number) => {
-      finished.value.push(index)
-    }
 
-    const checkAllDone = computed(() => finished.value.length === reels.length)
+    const checkAllDone = computed(() => !spinningReels.value.some(Boolean))
 
     const checkWin = () => {
-      const winningCombination = WinService.winningCombination(centerCombination.value, Line.Center)
-      if (winningCombination) {
-        // winCombinations.value = winnableLines.map(line => WinService.winningCombination(centered.value, line))
-        winCombination.value = winningCombination.id
-        balance.value = BalanceService.addWinAmountToBalance(balance.value, winningCombination.winAmount)
+      const centerWinCombination = WinService.winningCombination(centerCombination.value, Line.Center)
+      const topCombination = GameService.getTopCombination(centerCombination.value, reels)
+      const topWinCombination = WinService.winningCombination(topCombination, Line.Top)
+      const bottomCombination = GameService.getBottomCombination(centerCombination.value, reels)
+      const bottomWinCombination = WinService.winningCombination(bottomCombination, Line.Bottom)
+      if (centerWinCombination) {
+        winCombinations.value.push(centerWinCombination.id)
+        balance.value = BalanceService.addWinAmountToBalance(balance.value, centerWinCombination.winAmount)
+      }
+      if (topWinCombination) {
+        winCombinations.value.push(topWinCombination.id)
+        balance.value = BalanceService.addWinAmountToBalance(balance.value, topWinCombination.winAmount)
+      }
+      if (bottomWinCombination) {
+        winCombinations.value.push(bottomWinCombination.id)
+        balance.value = BalanceService.addWinAmountToBalance(balance.value, bottomWinCombination.winAmount)
       }
 
       centerCombination.value = []
@@ -77,12 +84,11 @@ export default defineComponent({
     return {
       canSpin,
       balance,
-
       centerCombination,
-      winCombination,
+      winCombinations,
       reels,
       spinHandler,
-      reelFinishHandler
+      spinningReels
     }
   }
 })

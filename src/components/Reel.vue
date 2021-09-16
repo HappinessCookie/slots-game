@@ -26,26 +26,29 @@ export default defineComponent({
   setup(props, { emit }) {
     const el = ref(null)
     const rotateBase = 360 / props.reel.symbols.length
-    watch(props, () => {
+    watch(() => props.elementIndex, (value, oldValue) => {
       if (!props.elementIndex) {
         return
       }
-      const randomDeg = rotateBase * props.reel.symbols.findIndex(symbol => symbol.symbol === props.elementIndex)
+      const newIndex = props.reel.symbols.findIndex(symbol => symbol.symbol === value)
+      const oldIndex = oldValue ? props.reel.symbols.findIndex(symbol => symbol.symbol === oldValue) : 0
+      const fromRotate = rotateBase * Number(oldIndex)
+      const toRotate = rotateBase * Number(newIndex)
       const html = new mojs.Html({
         el: el.value,
-        rotateX: { 360: 0 },
+        rotateX: { [fromRotate]: [fromRotate - 360] },
         isShowEnd: true,
         isForce3d: false,
         duration: 500,
-        repeat: 4,
-        easing: 'linear.none',
+        repeat: 4 + props.delay,
+        easing: 'linear.none'
       }).then({
-        rotateX: -randomDeg,
+        rotateX: { [fromRotate]: [toRotate - 360] },
         isShowEnd: true,
         isForce3d: false,
-        duration: 500 * props.delay,
-        easing: 'linear.none',
-        onComplete: () => emit('finish')
+        duration: 500,
+        easing: 'ease.out',
+        onComplete: () => emit('spinCompleted')
       })
 
       html.play()
@@ -82,7 +85,7 @@ $rotate-base: 360deg / $item-count;
 
     @for $i from 0 to $item-count + 1 {
       &:nth-child(#{$i + 1}) {
-        transform: rotateX($rotate-base * $i) translateZ($radius);
+        transform: rotateX(-$rotate-base * $i) translateZ($radius);
       }
     }
   }
