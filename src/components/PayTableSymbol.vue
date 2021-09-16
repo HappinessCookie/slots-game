@@ -5,11 +5,11 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, PropType } from "vue"
 import { ReelSymbolView } from "@/services/GameService"
 
 export default defineComponent({
-  name: 'PayTableSymbol',
+  name: "PayTableSymbol",
   props: {
     symbols: {
       type: ReelSymbolView || Array as PropType<ReelSymbolView[]>,

@@ -26,12 +26,12 @@
   </table>
 </template>
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, PropType } from "vue"
 import { payTable } from "@/services/WinService"
 import PayTableSymbol from "@/components/PayTableSymbol.vue"
 
 export default defineComponent({
-  name: 'PayTable',
+  name: "PayTable",
   components: { PayTableSymbol },
   props: {
     winCombinations: {

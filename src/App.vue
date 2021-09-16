@@ -4,6 +4,7 @@
 
 <script lang="ts">
 import SlotsGame from "@/components/SlotsGame.vue"
+
 export default {
   components: { SlotsGame }
 }

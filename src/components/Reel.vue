@@ -4,12 +4,12 @@
   </div>
 </template>
 <script lang="ts">
-import mojs from '@mojs/core/dist/mo.umd.js'
-import { defineComponent, PropType, ref, watch } from 'vue'
+import mojs from "@mojs/core/dist/mo.umd.js"
+import { defineComponent, PropType, ref, watch } from "vue"
 import { ReelSymbol, ReelView } from "@/services/GameService"
 
 export default defineComponent({
-  name: 'Reel',
+  name: "Reel",
   props: {
     reel: {
       type: ReelView,
@@ -41,14 +41,14 @@ export default defineComponent({
         isForce3d: false,
         duration: 500,
         repeat: 4 + props.delay,
-        easing: 'linear.none'
+        easing: "linear.none"
       }).then({
         rotateX: { [fromRotate]: [toRotate - 360] },
         isShowEnd: true,
         isForce3d: false,
         duration: 500,
-        easing: 'ease.out',
-        onComplete: () => emit('spinCompleted')
+        easing: "ease.out",
+        onComplete: () => emit("spinCompleted")
       })
 
       html.play()

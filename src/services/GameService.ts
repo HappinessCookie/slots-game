@@ -5,11 +5,11 @@ import SevenImage from "@/assets/reel-symbols/7.png"
 import CherryImage from "@/assets/reel-symbols/Cherry.png"
 
 export enum ReelSymbol {
-  TripleBar = 'TripleBar',
-  Bar = 'Bar',
-  DoubleBar = 'DoubleBar',
-  Seven = 'Seven',
-  Cherry = 'Cherry'
+  TripleBar = "TripleBar",
+  Bar = "Bar",
+  DoubleBar = "DoubleBar",
+  Seven = "Seven",
+  Cherry = "Cherry"
 }
 
 export class ReelSymbolView {
