@@ -36,7 +36,7 @@ export default defineComponent({
   },
   setup() {
     const centerCombination = ref<ReelSymbol[]>([])
-    const balance = ref<number>(500)
+    const balance = ref(500)
     const canSpin = computed(() => BalanceService.balanceEnoughForSpin(balance.value))
     const winCombinations = ref<Symbol[]>([])
     const spinningReels = ref(reels.map(_ => false))
