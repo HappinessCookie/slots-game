@@ -6,7 +6,7 @@
           <div
               class="reels__item"
               v-for="(reel, index) in reels"
-              :key="reel"
+              :key="index"
           >
             <Reel
                 :reel="reel"

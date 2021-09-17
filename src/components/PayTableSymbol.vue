@@ -1,7 +1,7 @@
 <template>
   <h4 v-if="symbols.length > 1">Any of:</h4>
   <div class="symbols-list">
-    <img v-for="symbol in symbols" :key="symbol" :src="symbol.image" alt="" />
+    <img v-for="symbol in symbols" :key="symbol.symbol" :src="symbol.image" alt="" />
   </div>
 </template>
 <script lang="ts">
