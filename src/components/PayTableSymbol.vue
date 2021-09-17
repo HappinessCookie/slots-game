@@ -12,7 +12,7 @@ export default defineComponent({
   name: "PayTableSymbol",
   props: {
     symbols: {
-      type: ReelSymbolView || Array as PropType<ReelSymbolView[]>,
+      type: Array as PropType<ReelSymbolView[]>,
       required: true
     }
   }
