@@ -1,18 +1,31 @@
 <template>
-  <div class="reels">
-    <Reel
-        v-for="(reel, index) in reels"
-        :key="reel"
-        :reel="reel"
-        :elementIndex="centerCombination[index]"
-        :delay="index"
-        @spinCompleted="() => spinningReels[index] = false"
-    />
-  </div>
-  <Balance :balance="balance" />
-  <button :disabled="!canSpin" @click="spinHandler">Spin</button>
-  <Debug :reels="reels" />
-  <PayTable :win-combinations="winCombinations" />
+  <Card>
+    <div class="slots-game">
+      <div class="slots-game__reels">
+        <div class="reels">
+          <div
+              class="reels__item"
+              v-for="(reel, index) in reels"
+              :key="reel"
+          >
+            <Reel
+                :reel="reel"
+                :elementIndex="centerCombination[index]"
+                :delay="index"
+                @spinCompleted="() => spinningReels[index] = false"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="slots-game__balance">
+        <span>Balance</span>
+        <Balance v-model="balance" />
+      </div>
+      <div class="slots-game__controls">
+        <button class="spin-button" :disabled="!canSpin" @click="spinHandler">Spin</button>
+      </div>
+    </div>
+  </Card>
 </template>
 
 <script lang="ts">
@@ -25,20 +38,21 @@ import BalanceService from "@/services/BalanceService"
 import Reel from "./Reel.vue"
 import Debug from "./Debug.vue"
 import DebugService from "@/services/DebugService"
+import Card from "@/components/Card.vue"
 
 export default defineComponent({
   name: "SlotsGame",
   components: {
+    Card,
     Debug,
     Balance,
     PayTable,
     Reel
   },
-  setup() {
+  setup(_, { emit }) {
     const centerCombination = ref<ReelSymbol[]>([])
     const balance = ref(500)
-    const canSpin = computed(() => BalanceService.balanceEnoughForSpin(balance.value))
-    const winCombinations = ref<Symbol[]>([])
+    const canSpin = computed(() => BalanceService.balanceEnoughForSpin(balance.value) && !spinningReels.value.some(Boolean))
     const spinningReels = ref(reels.map(_ => false))
 
     const spinHandler = () => {
@@ -47,7 +61,7 @@ export default defineComponent({
       }
       balance.value = BalanceService.subtractCostOfSpin(balance.value)
       spinningReels.value = reels.map(_ => true)
-      winCombinations.value = []
+      emit("wonCombinations", [])
       centerCombination.value = reels.map((reel, index) => {
         if (DebugService.debugState && DebugService.debugReels[index]) {
           const debugSymbol = DebugService.debugReels[index]
@@ -73,19 +87,21 @@ export default defineComponent({
       const topWinCombination = WinService.winningCombination(topCombination, Line.Top)
       const bottomCombination = GameService.getBottomCombination(centerCombination.value, reels)
       const bottomWinCombination = WinService.winningCombination(bottomCombination, Line.Bottom)
+      const wonCombinations = []
       if (centerWinCombination) {
-        winCombinations.value.push(centerWinCombination.id)
+        wonCombinations.push(centerWinCombination.id)
         balance.value = BalanceService.addWinAmountToBalance(balance.value, centerWinCombination.payoff)
       }
       if (topWinCombination) {
-        winCombinations.value.push(topWinCombination.id)
+        wonCombinations.push(topWinCombination.id)
         balance.value = BalanceService.addWinAmountToBalance(balance.value, topWinCombination.payoff)
       }
       if (bottomWinCombination) {
-        winCombinations.value.push(bottomWinCombination.id)
+        wonCombinations.push(bottomWinCombination.id)
         balance.value = BalanceService.addWinAmountToBalance(balance.value, bottomWinCombination.payoff)
       }
 
+      emit("wonCombinations", wonCombinations)
       centerCombination.value = []
     }
 
@@ -99,7 +115,6 @@ export default defineComponent({
       canSpin,
       balance,
       centerCombination,
-      winCombinations,
       reels,
       spinHandler,
       spinningReels
@@ -109,11 +124,57 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.slots-game {
+  display: grid;
+  grid-template-areas: "reels reels" "balance controls";
+
+  &__reels {
+    grid-area: reels;
+  }
+
+  &__balance {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    grid-area: balance;
+    color: #faf3ed;
+  }
+
+  &__controls {
+    grid-area: controls;
+    display: flex;
+    justify-content: end;
+  }
+}
+
 .reels {
-  display: flex;
-  align-items: center;
-  height: 300px;
-  overflow: hidden;
+  display: inline-flex;
+  gap: 10px;
+
+  &__item {
+    display: flex;
+    align-items: center;
+    height: 300px;
+    overflow: hidden;
+    border-radius: 10px;
+    border: 2px solid #95908c;
+    background-color: #faf3ed;
+  }
+}
+
+.spin-button {
+  padding: 10px;
+  width: 50px;
+  color: #fff;
+  border: 2px solid #95908c;
+  border-radius: 4px;
+  background-color: #c5d832;
+  transition: background-color 150ms ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #78854e;
+  }
 }
 </style>
 
