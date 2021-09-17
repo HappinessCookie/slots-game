@@ -8,7 +8,7 @@ export default defineComponent({
   name: "Balance",
   props: {
     modelValue: {
-      type: String,
+      type: Number,
       required: true
     }
   },
