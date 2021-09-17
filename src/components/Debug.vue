@@ -20,15 +20,15 @@
   </Card>
 </template>
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue"
+import { computed, defineComponent, PropType, ref, watch } from "vue"
 import { Line } from "@/services/WinService"
 import DebugService from "@/services/DebugService"
-import { ReelSymbol } from "@/services/GameService"
+import { ReelSymbol, ReelView } from "@/services/GameService"
 import Card from "@/components/Card.vue"
 
 interface DebugReelConfig {
-  symbol: ReelSymbol | null
-  line: Line | null
+  symbol: ReelSymbol | undefined
+  line: Line | undefined
 }
 
 export default defineComponent({
@@ -36,12 +36,12 @@ export default defineComponent({
   components: { Card },
   props: {
     reels: {
-      type: Array,
+      type: Array as PropType<ReelView[]>,
       required: true
     }
   },
   setup(props) {
-    const debugReels = ref(props.reels.map<DebugReelConfig>(_ => ({ symbol: null, line: null })))
+    const debugReels = ref(props.reels.map<DebugReelConfig>(_ => ({ symbol: undefined, line: undefined })))
 
     watch(debugReels, () => {
       debugReels.value.forEach((reel, index) => {
