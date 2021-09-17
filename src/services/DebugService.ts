@@ -2,7 +2,7 @@ import { Line } from "@/services/WinService"
 import { ReelSymbol } from "@/services/GameService"
 
 export default (new class {
-  public debugState: boolean = true
+  public debugState: boolean = false
   public debugReels: { symbol: ReelSymbol, line: Line }[] = []
 
   public setState(state: boolean) {
